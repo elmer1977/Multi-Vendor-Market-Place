@@ -6,6 +6,7 @@ import { getAllProductsShop } from "../../redux/actions/product";
 import { backend_url, server } from "../../server";
 import styles from "../../styles/styles";
 import Loader from "../Layout/Loader";
+import { clearSellerToken } from "../../utils/authTokens";
 
 
 
@@ -38,10 +39,12 @@ const ShopInfo = ({ isOwner }) => {
             await axios.get(`${server}/shop/logout`, {
                 withCredentials: true,
             });
+            clearSellerToken();
             navigate("/shop-login");
             window.location.reload();
         } catch (error) {
             console.error("Shop logout failed:", error);
+            clearSellerToken();
             navigate("/shop-login");
             window.location.reload();
         }

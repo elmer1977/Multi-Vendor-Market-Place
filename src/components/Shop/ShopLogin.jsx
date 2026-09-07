@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
+import { saveSellerToken } from "../../utils/authTokens";
 
 
 const ShopLogin = () => {
@@ -28,6 +29,7 @@ const ShopLogin = () => {
                 },
                 { withCredentials: true }
             ).then((res) => {
+                saveSellerToken(res.data.token);
                 toast.success("Login Sucess!")
                 navigate("/dashboard")
                 window.location.reload(true);
@@ -148,7 +150,6 @@ const ShopLogin = () => {
 }
 
 export default ShopLogin
-
 
 
 

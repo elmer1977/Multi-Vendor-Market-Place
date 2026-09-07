@@ -14,6 +14,7 @@ import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { clearUserToken } from "../../utils/authTokens";
 
 const ProfileSidebar = ({ active, setActive }) => {
   const navigate = useNavigate();
@@ -24,11 +25,13 @@ const ProfileSidebar = ({ active, setActive }) => {
     axios
       .get(`${server}/user/logout`, { withCredentials: true })
       .then((res) => {
+        clearUserToken();
         toast.success(res.data.message);
         window.location.reload(true);
         navigate("/login");
       })
       .catch((error) => {
+        clearUserToken();
         console.log(error.response.data.message);
       });
   };

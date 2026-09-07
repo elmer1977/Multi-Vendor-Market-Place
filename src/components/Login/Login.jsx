@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
+import { saveUserToken } from "../../utils/authTokens";
 
 
 const Login = () => {
@@ -25,6 +26,7 @@ const Login = () => {
                 },
                 { withCredentials: true }
             ).then((res) => {
+                saveUserToken(res.data.token);
                 toast.success("Login Sucess!")
                 navigate("/")
                 window.location.reload(true);
