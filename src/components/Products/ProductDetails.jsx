@@ -71,6 +71,10 @@ const ProductDetails = ({ data }) => {
   };
 
   const incrementCount = () => {
+    if (count >= data.stock) {
+      toast.error("You cannot order more than the available stock.");
+      return;
+    }
     setCount(count + 1);
   };
   const decrementCount = () => {
@@ -164,6 +168,9 @@ const ProductDetails = ({ data }) => {
               <div className="w-full 800px:w-[50%] pt-5 ">
                 <h1 className={`${styles.productTitle}`}>{data.name}</h1>
                 <p>{data.description}</p>
+                <p className="pt-2 font-medium">
+                  Available stock: {data.stock}
+                </p>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
                     {data.discountPrice}$

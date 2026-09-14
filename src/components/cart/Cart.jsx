@@ -102,7 +102,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
   const totalPrice = data.discountPrice * value;
 
   const increment = (data) => {
-    if (data.stock < value) {
+    if (value >= data.stock) {
       toast.error("Product stock limited!");
     } else {
       setValue(value + 1);
