@@ -70,7 +70,9 @@ const ProfileContent = ({ active }) => {
                 toast.success("avatar updated successfully!");
             })
             .catch((error) => {
-                toast.error(error);
+                toast.error(
+                    error.response?.data?.message || "Avatar upload failed"
+                );
             });
     };
 
