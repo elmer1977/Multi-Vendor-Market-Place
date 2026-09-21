@@ -35,6 +35,7 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false); // mobile menu
+  const [openNotifications, setOpenNotifications] = useState(false);
 
   // Handle search change
   const handleSearchChange = (e) => {
@@ -169,14 +170,38 @@ const Header = ({ activeHeading }) => {
 
           <div className="flex">
             <div className={`${styles.noramlFlex}`}>
-              <Link to="/profile" className="relative cursor-pointer mr-[15px]">
+              <div
+                className="relative cursor-pointer mr-[15px]"
+                onClick={() => setOpenNotifications((value) => !value)}
+              >
                 <AiOutlineBell size={30} color="rgb(255 255 255 / 83%)" />
                 {orders && orders.length > 0 ? (
                   <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#3bc177] px-1.5 text-[12px] text-white">
                     {orders.filter((order) => order.status !== "Processing").length}
                   </span>
                 ) : null}
-              </Link>
+                {openNotifications && (
+                  <div className="absolute right-0 top-10 z-50 w-80 rounded-md bg-white p-3 text-gray-800 shadow-lg">
+                    <h3 className="border-b pb-2 font-semibold">Notifications</h3>
+                    {orders && orders.length > 0 ? (
+                      orders.slice(0, 6).map((order) => (
+                        <Link
+                          key={order._id}
+                          to={`/user/order/${order._id}`}
+                          onClick={() => setOpenNotifications(false)}
+                          className="block border-b py-2 text-sm hover:bg-gray-50"
+                        >
+                          Order {order._id.slice(-6)}: {order.status}
+                        </Link>
+                      ))
+                    ) : (
+                      <p className="py-3 text-sm text-gray-500">
+                        No notifications yet.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className={`${styles.noramlFlex}`}>

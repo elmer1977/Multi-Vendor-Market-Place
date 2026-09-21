@@ -24,6 +24,12 @@ self.addEventListener("push", function (event) {
 
 self.addEventListener("notificationclick", function (event) {
   event.notification.close();
-  const clickResponsePromise = clients.openWindow(event.notification.data.url || "/");
+  const targetUrl = event.notification.data.url || "/Multi-Vendor-Market-Place/";
+  const url = targetUrl.startsWith("http")
+    ? targetUrl
+    : `/Multi-Vendor-Market-Place${targetUrl.startsWith("/") ? targetUrl : `/${targetUrl}`}`;
+  const clickResponsePromise = clients.openWindow(
+    url
+  );
   event.waitUntil(clickResponsePromise);
 });

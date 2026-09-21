@@ -19,13 +19,20 @@ export const registerPushSubscription = async (authType = "user") => {
   }
 
   try {
-    const registration = await navigator.serviceWorker.register("/sw.js");
+    const publicUrl = process.env.PUBLIC_URL || "";
+    const registration = await navigator.serviceWorker.register(
+      `${publicUrl}/sw.js`,
+      { scope: `${publicUrl}/` }
+    );
     const permission = await Notification.requestPermission();
     if (permission !== "granted") {
       return;
     }
 
     const { data } = await axios.get(`${server}/${authType}/vapid-public-key`);
+    if (!data.publicKey) {
+      throw new Error("VAPID public key is not configured");
+    }
     const publicKey = data.publicKey;
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
