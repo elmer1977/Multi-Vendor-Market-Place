@@ -36,6 +36,17 @@ const Header = ({ activeHeading }) => {
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false); // mobile menu
   const [openNotifications, setOpenNotifications] = useState(false);
+  const [readNotificationIds, setReadNotificationIds] = useState([]);
+
+  const notificationKey = user?._id
+    ? `read_user_notifications_${user._id}`
+    : null;
+  const visibleNotifications = (orders || []).filter(
+    (order) => order.status !== "Processing"
+  );
+  const unreadNotifications = visibleNotifications.filter(
+    (order) => !readNotificationIds.includes(`${order._id}:${order.status}`)
+  );
 
   // Handle search change
   const handleSearchChange = (e) => {
@@ -56,6 +67,25 @@ const Header = ({ activeHeading }) => {
       dispatch(getAllOrdersOfUser(user._id));
     }
   }, [dispatch, isAuthenticated, user]);
+
+  useEffect(() => {
+    if (!notificationKey) {
+      setReadNotificationIds([]);
+      return;
+    }
+
+    const savedIds = JSON.parse(localStorage.getItem(notificationKey) || "[]");
+    setReadNotificationIds(savedIds);
+  }, [notificationKey]);
+
+  const markNotificationRead = (order) => {
+    const notificationId = `${order._id}:${order.status}`;
+    const nextIds = [...new Set([...readNotificationIds, notificationId])];
+    setReadNotificationIds(nextIds);
+    if (notificationKey) {
+      localStorage.setItem(notificationKey, JSON.stringify(nextIds));
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -175,21 +205,30 @@ const Header = ({ activeHeading }) => {
                 onClick={() => setOpenNotifications((value) => !value)}
               >
                 <AiOutlineBell size={30} color="rgb(255 255 255 / 83%)" />
-                {orders && orders.length > 0 ? (
+                {unreadNotifications.length > 0 ? (
                   <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#3bc177] px-1.5 text-[12px] text-white">
-                    {orders.filter((order) => order.status !== "Processing").length}
+                    {unreadNotifications.length}
                   </span>
                 ) : null}
                 {openNotifications && (
                   <div className="absolute right-0 top-10 z-50 w-80 rounded-md bg-white p-3 text-gray-800 shadow-lg">
                     <h3 className="border-b pb-2 font-semibold">Notifications</h3>
-                    {orders && orders.length > 0 ? (
-                      orders.slice(0, 6).map((order) => (
+                    {visibleNotifications.length > 0 ? (
+                      visibleNotifications.slice(0, 6).map((order) => (
                         <Link
                           key={order._id}
                           to={`/user/order/${order._id}`}
-                          onClick={() => setOpenNotifications(false)}
-                          className="block border-b py-2 text-sm hover:bg-gray-50"
+                          onClick={() => {
+                            markNotificationRead(order);
+                            setOpenNotifications(false);
+                          }}
+                          className={`block border-b py-2 text-sm hover:bg-gray-50 ${
+                            !readNotificationIds.includes(
+                              `${order._id}:${order.status}`
+                            )
+                              ? "font-semibold"
+                              : ""
+                          }`}
                         >
                           Order {order._id.slice(-6)}: {order.status}
                         </Link>
