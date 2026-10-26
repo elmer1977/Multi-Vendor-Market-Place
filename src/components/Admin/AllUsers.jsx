@@ -17,7 +17,6 @@ const AllUsers = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [userId, setUserId] = useState("");
-  const [selectedRole, setSelectedRole] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [name, setName] = useState("");
@@ -35,9 +34,10 @@ const AllUsers = () => {
     dispatch(getAllUsers());
   };
 
-  const handleDelete = async (id, role) => {
-    if (role === "Admin") {
-      toast.error("Admin users cannot be deleted");
+  const handleDelete = async (id) => {
+    const userToDelete = users?.find((user) => user._id === id);
+    if (userToDelete?.isProtectedAdmin) {
+      toast.error("The oldest admin cannot be deleted");
       return;
     }
 
@@ -162,10 +162,14 @@ const AllUsers = () => {
       sortable: false,
       renderCell: (params) => (
         <Button
-          disabled={params.row.role === "Admin"}
+          disabled={params.row.isProtectedAdmin}
+          title={
+            params.row.isProtectedAdmin
+              ? "The oldest admin cannot be deleted"
+              : "Delete user"
+          }
           onClick={() => {
             setUserId(params.id);
-            setSelectedRole(params.row.role);
             setOpenDelete(true);
           }}
         >
@@ -183,6 +187,7 @@ const AllUsers = () => {
         name: item.name,
         email: item.email,
         role: item.role,
+        isProtectedAdmin: item.isProtectedAdmin,
         phoneNumber: item.phoneNumber || "",
         joinedAt: item.createdAt.slice(0, 10),
       });
@@ -245,7 +250,7 @@ const AllUsers = () => {
                 </div>
                 <div
                   className={`${styles.button} text-white text-[18px] !h-[42px] ml-4`}
-                  onClick={() => setOpenDelete(false) || handleDelete(userId, selectedRole)}
+                  onClick={() => setOpenDelete(false) || handleDelete(userId)}
                 >
                   confirm
                 </div>
@@ -283,14 +288,28 @@ const AllUsers = () => {
                   placeholder="Phone Number"
                   className="w-full px-3 py-2 border border-gray-300 rounded"
                 />
-                <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded"
-                >
-                  <option value="user">User</option>
-                  <option value="Admin">Admin</option>
-                </select>
+                {selectedUser?.isProtectedAdmin ? (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Role
+                    </label>
+                    <input
+                      type="text"
+                      value="Admin (protected oldest admin)"
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
+                    />
+                  </div>
+                ) : (
+                  <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded"
+                  >
+                    <option value="user">User</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                )}
                 <div className="flex justify-end gap-3">
                   <button
                     className={`${styles.button} text-white text-[16px] !h-[42px]`}
