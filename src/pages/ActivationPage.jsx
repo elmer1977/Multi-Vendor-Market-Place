@@ -1,32 +1,39 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { server } from "../server";
 import axios from 'axios';
 
 
-
 const ActivationPage = () => {
     const { activation_token } = useParams();
-    const [error, setError] = useState(false);
+    const [status, setStatus] = useState("loading");
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
-        if (activation_token) {
-            const activationEmail = async () => {
-                try {
-                    const res = await axios
-                        .post(`${server}/user/activation`, {
-                            activation_token
-                        })
-                    console.log(res.data.message);
-                } catch (err) {
-                    console.log(err.response.data.message);
-                    setError(true);
-                }
+        const activateAccount = async () => {
+            if (!activation_token) {
+                setMessage("This activation link is invalid.");
+                setStatus("error");
+                return;
             }
-            activationEmail();
-        }
 
-    }, []);
+            try {
+                const { data } = await axios.post(`${server}/user/activation`, {
+                    activation_token
+                });
+                setMessage(data.message || "Your account has been activated.");
+                setStatus("success");
+            } catch (error) {
+                setMessage(
+                    error.response?.data?.message ||
+                    "We could not activate your account. The link may have expired."
+                );
+                setStatus("error");
+            }
+        };
+
+        activateAccount();
+    }, [activation_token]);
 
     return (
         <div
@@ -37,13 +44,22 @@ const ActivationPage = () => {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-            {
-                error ? (
-                    <p className='text-red-800'>Your toke is expair </p>
-                ) : (
-                    <p className='text-green-800'>Your Account has been created sucess fully!</p>
-                )
-            }
+            <div className="text-center px-4">
+                {status === "loading" && (
+                    <p className="text-gray-700">Activating your account...</p>
+                )}
+                {status === "error" && (
+                    <p className="text-red-800">{message}</p>
+                )}
+                {status === "success" && (
+                    <>
+                        <p className="text-green-800">{message}</p>
+                        <Link to="/login" className="text-blue-600 underline mt-4 inline-block">
+                            Sign in to your account
+                        </Link>
+                    </>
+                )}
+            </div>
 
         </div>
     )
