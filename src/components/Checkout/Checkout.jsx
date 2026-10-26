@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import styles from "../../styles/styles";
 import { Country, State } from "country-state-city";
 import { useNavigate } from "react-router-dom";
@@ -20,11 +20,34 @@ const Checkout = () => {
     const [couponCode, setCouponCode] = useState("");
     const [couponCodeData, setCouponCodeData] = useState(null);
     const [discountPrice, setDiscountPrice] = useState(null);
+    const [selectedAddress, setSelectedAddress] = useState("");
     const navigate = useNavigate();
+
+    const applySavedAddress = useCallback((address) => {
+        setSelectedAddress(String(address._id || address.addressType));
+        setAddress1(address.address1 || "");
+        setAddress2(address.address2 || "");
+        setZipCode(address.zipCode ?? null);
+        setCountry(address.country || "");
+        setCity(address.city || "");
+    }, []);
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
+    useEffect(() => {
+        const addresses = user?.addresses || [];
+        const homeAddress = addresses.find(
+            (address) => address.addressType?.toLowerCase() === "home"
+        );
+
+        setSelectedAddress("");
+        if (homeAddress) {
+            applySavedAddress(homeAddress);
+            setUserInfo(true);
+        }
+    }, [user, applySavedAddress]);
 
     const paymentSubmit = () => {
         if (address1 === "" || address2 === "" || zipCode === null || country === "" || city === "") {
@@ -118,6 +141,8 @@ const Checkout = () => {
                         setCity={setCity}
                         userInfo={userInfo}
                         setUserInfo={setUserInfo}
+                        selectedAddress={selectedAddress}
+                        applySavedAddress={applySavedAddress}
                         address1={address1}
                         setAddress1={setAddress1}
                         address2={address2}
@@ -156,6 +181,8 @@ const ShippingInfo = ({
     setCity,
     userInfo,
     setUserInfo,
+    selectedAddress,
+    applySavedAddress,
     address1,
     setAddress1,
     address2,
@@ -284,22 +311,21 @@ const ShippingInfo = ({
             {userInfo && (
                 <div>
                     {user &&
-                        user.addresses.map((item, index) => (
-                            <div className="w-full flex mt-1">
+                        user.addresses.map((item) => (
+                            <label
+                                key={item._id || item.addressType}
+                                className="w-full flex mt-1 items-center cursor-pointer"
+                            >
                                 <input
-                                    type="checkbox"
+                                    type="radio"
                                     className="mr-3"
-                                    value={item.addressType}
-                                    onClick={() =>
-                                        setAddress1(item.address1) ||
-                                        setAddress2(item.address2) ||
-                                        setZipCode(item.zipCode) ||
-                                        setCountry(item.country) ||
-                                        setCity(item.city)
-                                    }
+                                    name="saved-shipping-address"
+                                    value={String(item._id || item.addressType)}
+                                    checked={selectedAddress === String(item._id || item.addressType)}
+                                    onChange={() => applySavedAddress(item)}
                                 />
                                 <h2>{item.addressType}</h2>
-                            </div>
+                            </label>
                         ))}
                 </div>
             )}
