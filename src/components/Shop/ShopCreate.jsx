@@ -19,17 +19,19 @@ const ShopCreate = () => {
     const [avatar, setAvatar] = useState();
     const [password, setPassword] = useState("");
     const [visible, setVisible] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const config = { headers: { "Content-Type": "multipart/form-data" } };
-        // meaning of uper line is that we are creating a new object with the name of config and the value of config is {headers:{'Content-Type':'multipart/form-data'}}  
+        if (!avatar) {
+            toast.error("Please upload a shop image.");
+            return;
+        }
 
+        setIsSubmitting(true);
         const newForm = new FormData();
-        // meaning of uper line is that we are creating a new form data object and we are sending it to the backend with the name of newForm and the value of newForm is new FormData()
         newForm.append("file", avatar);
-        // meanin of newForm.append("file",avatar) is that we are sending a file to the backend with the name of file and the value of the file is avatar
         newForm.append("name", name);
         newForm.append("email", email);
         newForm.append("password", password);
@@ -37,28 +39,20 @@ const ShopCreate = () => {
         newForm.append("address", address);
         newForm.append("phoneNumber", phoneNumber);
 
-        axios
-            .post(`${server}/shop/create-shop`, newForm, config)
-            .then((res) => {
-                toast.success(res.data.message);
-                setName("");
-                setEmail("");
-                setPassword("");
-                setAvatar();
-                setZipCode();
-                setAddress("");
-                setPhoneNumber();
-
-            })
-
-            .catch((error) => {
-                toast.error(error.response.data.message);
-            });
-        navigate("/shop-login")
-        window.location.reload();
-
-
-
+        try {
+            const { data } = await axios.post(
+                `${server}/shop/create-shop`,
+                newForm
+            );
+            toast.success(data.message);
+            navigate("/shop-login");
+        } catch (error) {
+            toast.error(
+                error.response?.data?.message || "Seller registration failed."
+            );
+        } finally {
+            setIsSubmitting(false);
+        }
     }
     // File upload
     const handleFileInputChange = (e) => {
@@ -237,6 +231,7 @@ const ShopCreate = () => {
                                         type="file"
                                         name="avatar"
                                         id="file-input"
+                                        required
                                         onChange={handleFileInputChange}
                                         className="sr-only"
                                     />
@@ -251,9 +246,10 @@ const ShopCreate = () => {
                         <div>
                             <button
                                 type='submit'
+                                disabled={isSubmitting}
                                 className=' className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"'
                             >
-                                Submit
+                                {isSubmitting ? "Submitting..." : "Submit"}
                             </button>
                         </div>
 
@@ -271,8 +267,6 @@ const ShopCreate = () => {
 }
 
 export default ShopCreate
-
-
 
 
 

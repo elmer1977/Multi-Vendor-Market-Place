@@ -1,31 +1,39 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { server } from "../server";
 import axios from 'axios';
 
 
 const SellerActivationPage = () => {
     const { activation_token } = useParams();
-    const [error, setError] = useState(false);
+    const [status, setStatus] = useState("loading");
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
-        if (activation_token) {
-            const activationEmail = async () => {
-                try {
-                    const res = await axios
-                        .post(`${server}/shop/activation`, {
-                            activation_token
-                        })
-
-                } catch (err) {
-                    console.log(err.response.data.message);
-                    setError(true);
-                }
+        const activateSeller = async () => {
+            if (!activation_token) {
+                setMessage("This seller activation link is invalid.");
+                setStatus("error");
+                return;
             }
-            activationEmail();
-        }
 
-    }, []);
+            try {
+                const { data } = await axios.post(`${server}/shop/activation`, {
+                    activation_token
+                });
+                setMessage(data.message || "Your seller account is ready. You can now sign in.");
+                setStatus("success");
+            } catch (error) {
+                setMessage(
+                    error.response?.data?.message ||
+                    "We could not activate your seller account. The link may have expired."
+                );
+                setStatus("error");
+            }
+        };
+
+        activateSeller();
+    }, [activation_token]);
 
     return (
         <div
@@ -36,20 +44,28 @@ const SellerActivationPage = () => {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-            {
-                error ? (
-                    <p className='text-red-800'>Your toke is expair </p>
-                ) : (
-                    <p className='text-green-800'>Your Account has been created sucess fully!</p>
-                )
-            }
+            <div className="text-center px-4">
+                {status === "loading" && (
+                    <p className="text-gray-700">Activating your seller account...</p>
+                )}
+                {status === "error" && (
+                    <p className="text-red-800">{message}</p>
+                )}
+                {status === "success" && (
+                    <>
+                        <p className="text-green-800">{message}</p>
+                        <Link to="/shop-login" className="text-blue-600 underline mt-4 inline-block">
+                            Sign in to your seller account
+                        </Link>
+                    </>
+                )}
+            </div>
 
         </div>
     )
 }
 
 export default SellerActivationPage
-
 
 
 
