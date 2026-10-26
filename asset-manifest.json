@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Multi-Vendor-Market-Place/static/css/main.92c8f1fa.css",
-    "main.js": "/Multi-Vendor-Market-Place/static/js/main.c30b2a10.js",
+    "main.js": "/Multi-Vendor-Market-Place/static/js/main.d0bb1a7b.js",
     "static/js/787.cda612ba.chunk.js": "/Multi-Vendor-Market-Place/static/js/787.cda612ba.chunk.js",
     "index.html": "/Multi-Vendor-Market-Place/index.html",
     "main.92c8f1fa.css.map": "/Multi-Vendor-Market-Place/static/css/main.92c8f1fa.css.map",
-    "main.c30b2a10.js.map": "/Multi-Vendor-Market-Place/static/js/main.c30b2a10.js.map",
+    "main.d0bb1a7b.js.map": "/Multi-Vendor-Market-Place/static/js/main.d0bb1a7b.js.map",
     "787.cda612ba.chunk.js.map": "/Multi-Vendor-Market-Place/static/js/787.cda612ba.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.92c8f1fa.css",
-    "static/js/main.c30b2a10.js"
+    "static/js/main.d0bb1a7b.js"
   ]
 }
