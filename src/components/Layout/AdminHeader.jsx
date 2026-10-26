@@ -3,7 +3,6 @@ import { MdOutlineLocalOffer } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { CiMoneyBill } from "react-icons/ci";
-import { GrWorkshop } from "react-icons/gr";
 import { backend_url } from "../../server";
 import { imageUrl } from "../../utils/imageUrl";
 
@@ -31,13 +30,6 @@ const AdminHeader = () => {
           </Link>
           <Link to="/admin-events" className="800px:block hidden">
             <MdOutlineLocalOffer
-              color="#555"
-              size={30}
-              className="mx-5 cursor-pointer"
-            />
-          </Link>
-          <Link to="/admin-sellers" className="800px:block hidden">
-            <GrWorkshop
               color="#555"
               size={30}
               className="mx-5 cursor-pointer"

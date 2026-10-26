@@ -16,12 +16,15 @@ const AllUsers = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
-  const [userId, setUserId] = useState("");
+  const [selectedRecord, setSelectedRecord] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [description, setDescription] = useState("");
   const [role, setRole] = useState("user");
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(null);
@@ -34,15 +37,18 @@ const AllUsers = () => {
     dispatch(getAllUsers());
   };
 
-  const handleDelete = async (id) => {
-    const userToDelete = users?.find((user) => user._id === id);
-    if (userToDelete?.isProtectedAdmin) {
+  const handleDelete = async (record) => {
+    if (record?.isProtectedAdmin) {
       toast.error("The oldest admin cannot be deleted");
       return;
     }
 
     try {
-      const { data } = await axios.delete(`${server}/user/delete-user/${id}`, {
+      const deletePath =
+        record.entityType === "seller"
+          ? `/shop/delete-seller/${record.entityId}`
+          : `/user/delete-user/${record.entityId}`;
+      const { data } = await axios.delete(`${server}${deletePath}`, {
         withCredentials: true,
       });
       toast.success(data.message);
@@ -57,23 +63,26 @@ const AllUsers = () => {
     setName(user.name);
     setEmail(user.email);
     setPhoneNumber(user.phoneNumber || "");
-    setRole(user.role || "user");
+    setAddress(user.address || "");
+    setZipCode(user.zipCode || "");
+    setDescription(user.description || "");
+    setRole(user.entityType === "seller" ? "user" : user.actualRole || "user");
     setOpenEdit(true);
   };
 
   const handleUpdate = async () => {
     try {
-      const { data } = await axios.put(
-        `${server}/user/admin/update-user/${selectedUser.id}`,
-        {
-          name,
-          email,
-          phoneNumber,
-          role,
-        },
-        { withCredentials: true }
-      );
-      toast.success("User updated successfully");
+      const isSeller = selectedUser.entityType === "seller";
+      const updatePath = isSeller
+        ? `/shop/admin/update-seller/${selectedUser.entityId}`
+        : `/user/admin/update-user/${selectedUser.entityId}`;
+      const updates = isSeller
+        ? { name, email, phoneNumber, address, zipCode, description }
+        : { name, email, phoneNumber, role };
+      await axios.put(`${server}${updatePath}`, updates, {
+        withCredentials: true,
+      });
+      toast.success(isSeller ? "Seller updated successfully" : "User updated successfully");
       setOpenEdit(false);
       refreshUsers();
     } catch (error) {
@@ -112,7 +121,7 @@ const AllUsers = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "User ID", minWidth: 150, flex: 0.7 },
+    { field: "id", headerName: "Account ID", minWidth: 150, flex: 0.7 },
     {
       field: "name",
       headerName: "Name",
@@ -128,7 +137,7 @@ const AllUsers = () => {
     },
     {
       field: "role",
-      headerName: "User Role",
+      headerName: "Role",
       type: "text",
       minWidth: 130,
       flex: 0.7,
@@ -144,7 +153,7 @@ const AllUsers = () => {
       field: "edit",
       flex: 0.8,
       minWidth: 130,
-      headerName: "Edit User",
+      headerName: "Edit Account",
       type: "number",
       sortable: false,
       renderCell: (params) => (
@@ -157,7 +166,7 @@ const AllUsers = () => {
       field: "delete",
       flex: 0.8,
       minWidth: 150,
-      headerName: "Delete User",
+      headerName: "Delete Account",
       type: "number",
       sortable: false,
       renderCell: (params) => (
@@ -169,7 +178,7 @@ const AllUsers = () => {
               : "Delete user"
           }
           onClick={() => {
-            setUserId(params.id);
+            setSelectedRecord(params.row);
             setOpenDelete(true);
           }}
         >
@@ -183,13 +192,19 @@ const AllUsers = () => {
   users &&
     users.forEach((item) => {
       row.push({
-        id: item._id,
+        id: `${item.entityType}-${item._id}`,
+        entityId: item._id,
+        entityType: item.entityType,
         name: item.name,
         email: item.email,
-        role: item.role,
+        role: item.displayRole,
+        actualRole: item.role,
         isProtectedAdmin: item.isProtectedAdmin,
         phoneNumber: item.phoneNumber || "",
-        joinedAt: item.createdAt.slice(0, 10),
+        address: item.address || "",
+        zipCode: item.zipCode || "",
+        description: item.description || "",
+        joinedAt: item.createdAt?.slice(0, 10) || "",
       });
     });
 
@@ -204,7 +219,7 @@ const AllUsers = () => {
     <div className="w-full flex justify-center pt-5">
       <div className="w-[97%]">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-5 gap-4">
-          <h3 className="text-[22px] font-Poppins">All Users</h3>
+          <h3 className="text-[22px] font-Poppins">All Accounts</h3>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
             <input
               type="text"
@@ -239,7 +254,7 @@ const AllUsers = () => {
                 <RxCross1 size={25} onClick={() => setOpenDelete(false)} />
               </div>
               <h3 className="text-[25px] text-center py-5 font-Poppins text-[#000000cb]">
-                Are you sure you wanna delete this user?
+                Are you sure you want to delete this {selectedRecord?.entityType === "seller" ? "seller" : "user"}?
               </h3>
               <div className="w-full flex items-center justify-center">
                 <div
@@ -250,7 +265,10 @@ const AllUsers = () => {
                 </div>
                 <div
                   className={`${styles.button} text-white text-[18px] !h-[42px] ml-4`}
-                  onClick={() => setOpenDelete(false) || handleDelete(userId)}
+                  onClick={() => {
+                    setOpenDelete(false);
+                    handleDelete(selectedRecord);
+                  }}
                 >
                   confirm
                 </div>
@@ -265,7 +283,9 @@ const AllUsers = () => {
               <div className="w-full flex justify-end cursor-pointer">
                 <RxCross1 size={25} onClick={() => setOpenEdit(false)} />
               </div>
-              <h3 className="text-[25px] text-center py-5 font-Poppins text-[#000000cb]">Edit User</h3>
+              <h3 className="text-[25px] text-center py-5 font-Poppins text-[#000000cb]">
+                Edit {selectedUser?.entityType === "seller" ? "Seller" : "User"}
+              </h3>
               <div className="space-y-4">
                 <input
                   type="text"
@@ -288,14 +308,37 @@ const AllUsers = () => {
                   placeholder="Phone Number"
                   className="w-full px-3 py-2 border border-gray-300 rounded"
                 />
-                {selectedUser?.isProtectedAdmin ? (
+                {selectedUser?.entityType === "seller" ? (
+                  <>
+                    <input
+                      type="text"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="Address"
+                      className="w-full px-3 py-2 border border-gray-300 rounded"
+                    />
+                    <input
+                      type="number"
+                      value={zipCode}
+                      onChange={(e) => setZipCode(e.target.value)}
+                      placeholder="ZIP Code"
+                      className="w-full px-3 py-2 border border-gray-300 rounded"
+                    />
+                    <textarea
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Description"
+                      className="w-full px-3 py-2 border border-gray-300 rounded"
+                    />
+                  </>
+                ) : selectedUser?.isProtectedAdmin ? (
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Role
                     </label>
                     <input
                       type="text"
-                      value="Admin (protected oldest admin)"
+                      value="Super Admin"
                       disabled
                       className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
                     />
@@ -306,7 +349,7 @@ const AllUsers = () => {
                     onChange={(e) => setRole(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded"
                   >
-                    <option value="user">User</option>
+                    <option value="user">Customer</option>
                     <option value="Admin">Admin</option>
                   </select>
                 )}
@@ -363,7 +406,7 @@ const AllUsers = () => {
                   onChange={(e) => setRole(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded"
                 >
-                  <option value="user">User</option>
+                  <option value="user">Customer</option>
                   <option value="Admin">Admin</option>
                 </select>
                 <input

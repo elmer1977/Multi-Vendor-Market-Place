@@ -45,7 +45,6 @@ import {
 import {
   AdminDashboardPage,
   AdminDashboardUsers,
-  AdminDashboardSellers,
   AdminDashboardOrders,
   AdminDashboardProducts,
   AdminDashboardEvents,
@@ -317,7 +316,7 @@ const App = () => {
           path="/admin-sellers"
           element={
             <ProtectedAdminRoute>
-              <AdminDashboardSellers />
+              <AdminDashboardUsers />
             </ProtectedAdminRoute>
           }
         />
