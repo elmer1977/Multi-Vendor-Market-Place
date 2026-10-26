@@ -42,7 +42,10 @@ const Header = ({ activeHeading }) => {
     ? `read_user_notifications_${user._id}`
     : null;
   const visibleNotifications = (orders || []).filter(
-    (order) => order.status !== "Processing"
+    (order) =>
+      order.status !== "Pending" &&
+      order.status !== "Processing" &&
+      order.status !== "Cancelled"
   );
   const unreadNotifications = visibleNotifications.filter(
     (order) => !readNotificationIds.includes(`${order._id}:${order.status}`)

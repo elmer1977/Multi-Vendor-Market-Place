@@ -22,7 +22,9 @@ const TrackOrder = () => {
         <div className="w-full h-[80vh] flex justify-center items-center">
             {" "}
             <>
-                {data && data?.status === "Processing" ? (
+                {data?.status === "Pending" ? (
+                    <h1 className="text-[20px]">Your order is pending confirmation from the shop.</h1>
+                ) : data?.status === "Processing" ? (
                     <h1 className="text-[20px]">Your Order is processing in shop.</h1>
                 ) : data?.status === "Transferred to delivery partner" ? (
                     <h1 className="text-[20px]">
@@ -46,6 +48,8 @@ const TrackOrder = () => {
                     <h1 className="text-[20px]">Your refund is processing!</h1>
                 ) : data?.status === "Refund Success" ? (
                     <h1 className="text-[20px]">Your Refund is success!</h1>
+                ) : data?.status === "Cancelled" ? (
+                    <h1 className="text-[20px]">Your order was cancelled.</h1>
                 ) : null}
             </>
 

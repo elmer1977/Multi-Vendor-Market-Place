@@ -19,6 +19,7 @@ const UserOrderDetails = () => {
   const [comment, setComment] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [rating, setRating] = useState(1);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const { id } = useParams();
 
@@ -78,6 +79,29 @@ const UserOrderDetails = () => {
       .catch((error) => {
         toast.error(error.response.data.message);
       });
+  };
+
+  const cancelOrderHandler = async () => {
+    if (!window.confirm("Cancel this order? Inventory will be restored. Any payment refund will be handled separately.")) {
+      return;
+    }
+
+    setIsCancelling(true);
+    try {
+      const { data: response } = await axios.put(
+        `${server}/order/cancel-order/${id}`,
+        {},
+        { withCredentials: true }
+      );
+      toast.success(response.message);
+      dispatch(getAllOrdersOfUser(user._id));
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Unable to cancel this order."
+      );
+    } finally {
+      setIsCancelling(false);
+    }
   };
 
   return (
@@ -219,7 +243,31 @@ const UserOrderDetails = () => {
         <h5>
           Total Price: <strong>US${data?.totalPrice}</strong>
         </h5>
+        <h5 className="mt-2">
+          Order status: <strong>{data?.status}</strong>
+        </h5>
       </div>
+      {[
+        "Pending",
+        "Processing",
+        "Transferred to delivery partner",
+        "Shipping",
+        "Received",
+      ].includes(data?.status) && (
+        <div className="mt-4 text-right">
+          <button
+            type="button"
+            onClick={cancelOrderHandler}
+            disabled={isCancelling}
+            className="px-4 py-2 rounded bg-red-600 text-white disabled:opacity-60"
+          >
+            {isCancelling ? "Cancelling..." : "Cancel Order"}
+          </button>
+          <p className="mt-2 text-sm text-gray-600">
+            Orders can be cancelled until they are on the way. Payment refunds are handled separately.
+          </p>
+        </div>
+      )}
       <br />
       <br />
 

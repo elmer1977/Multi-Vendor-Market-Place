@@ -145,7 +145,8 @@ const OrderDetails = () => {
       <br />
 
       <h4 className="pt-3 text-[20px] font-[600]">Order status:</h4>
-      {data?.status !== "Processing refund" &&
+      {data?.status !== "Cancelled" &&
+        data?.status !== "Processing refund" &&
         data?.status !== "Refund Success" && (
           <select
             value={status}
@@ -153,6 +154,7 @@ const OrderDetails = () => {
             className="w-[200px] mt-2 border h-[35px] rounded-[5px]"
           >
             {[
+              "Pending",
               "Processing",
               "Transferred to delivery partner",
               "Shipping",
@@ -162,6 +164,7 @@ const OrderDetails = () => {
             ]
               .slice(
                 [
+                  "Pending",
                   "Processing",
                   "Transferred to delivery partner",
                   "Shipping",
@@ -197,16 +200,20 @@ const OrderDetails = () => {
         </select>
       ) : null}
 
-      <div
-        className={`${styles.button} mt-5 !bg-[#FCE1E6] !rounded-[4px] text-[#E94560] font-[600] !h-[45px] text-[18px]`}
-        onClick={
-          data?.status !== "Processing refund"
-            ? orderUpdateHandler
-            : refundOrderUpdateHandler
-        }
-      >
-        Update Status
-      </div>
+      {data?.status === "Cancelled" ? (
+        <p className="mt-3 text-red-600">This order was cancelled by the customer.</p>
+      ) : (
+        <div
+          className={`${styles.button} mt-5 !bg-[#FCE1E6] !rounded-[4px] text-[#E94560] font-[600] !h-[45px] text-[18px]`}
+          onClick={
+            data?.status !== "Processing refund"
+              ? orderUpdateHandler
+              : refundOrderUpdateHandler
+          }
+        >
+          Update Status
+        </div>
+      )}
     </div>
   );
 };
