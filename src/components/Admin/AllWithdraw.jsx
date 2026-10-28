@@ -8,6 +8,7 @@ import { RxCross1 } from "react-icons/rx";
 import styles from "../../styles/styles";
 import { toast } from "react-toastify";
 import { formatPrice } from "../../utils/currency";
+import { formatDate } from "../../utils/date";
 
 const AllWithdraw = () => {
   const [data, setData] = useState([]);
@@ -108,7 +109,7 @@ const AllWithdraw = () => {
         name: item.seller.name,
         amount: formatPrice(item.amount),
         status: item.status,
-        createdAt: item.createdAt.slice(0, 10),
+        createdAt: formatDate(item.createdAt),
       });
     });
   return (

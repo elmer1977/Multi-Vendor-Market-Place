@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Header from "../components/Layout/Header";
 import { useSelector } from "react-redux";
 import socketIO from "socket.io-client";
-import { format } from "timeago.js";
 import { backend_url, server } from "../server";
 import { imageUrl } from "../utils/imageUrl";
 import axios from "axios";
@@ -10,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai";
 import { TfiGallery } from "react-icons/tfi";
 import styles from "../styles/styles";
+import { formatDate } from "../utils/date";
 const ENDPOINT = process.env.REACT_APP_SOCKET_URL || "https://backend-uc5x.onrender.com";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
@@ -388,7 +388,7 @@ const SellerInbox = ({
                   </div>
 
                   <p className="text-[12px] text-[#000000d3] pt-1">
-                    {format(item.createdAt)}
+                    {formatDate(item.createdAt)}
                   </p>
                 </div>
               )}

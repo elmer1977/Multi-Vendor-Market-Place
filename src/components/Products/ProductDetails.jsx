@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import Ratings from "./Ratings";
 import axios from "axios";
 import { formatPrice, getProductPrice } from "../../utils/currency";
+import { formatDate } from "../../utils/date";
 
 const ProductDetails = ({ data }) => {
   const { products } = useSelector((state) => state.products);
@@ -406,7 +407,7 @@ const ProductDetailsInfo = ({
                 <h5 className="font-[600]">
                   Joined on:{" "}
                   <span className="font-[500]">
-                    {data.shop?.createdAt?.slice(0, 10)}
+                    {formatDate(data.shop?.createdAt)}
                   </span>
                 </h5>
                 <h5 className="font-[600] pt-3">

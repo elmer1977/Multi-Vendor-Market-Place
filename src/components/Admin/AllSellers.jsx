@@ -10,6 +10,7 @@ import { server } from "../../server";
 import { toast } from "react-toastify";
 import { getAllSellers } from "../../redux/actions/sellers";
 import { Link } from "react-router-dom";
+import { formatDate } from "../../utils/date";
 
 const AllSellers = () => {
   const dispatch = useDispatch();
@@ -154,7 +155,7 @@ const AllSellers = () => {
         seller: item,
         name: item?.name,
         email: item?.email,
-        joinedAt: item.createdAt.slice(0, 10),
+        joinedAt: formatDate(item.createdAt),
         address: item.address,
       });
     });

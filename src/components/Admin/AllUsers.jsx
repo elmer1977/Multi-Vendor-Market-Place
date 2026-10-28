@@ -9,6 +9,7 @@ import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
+import { formatDate } from "../../utils/date";
 
 const AllUsers = () => {
   const dispatch = useDispatch();
@@ -204,7 +205,7 @@ const AllUsers = () => {
         address: item.address || "",
         zipCode: item.zipCode || "",
         description: item.description || "",
-        joinedAt: item.createdAt?.slice(0, 10) || "",
+        joinedAt: formatDate(item.createdAt),
       });
     });
 

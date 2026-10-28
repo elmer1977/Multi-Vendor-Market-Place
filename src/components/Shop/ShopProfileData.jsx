@@ -8,6 +8,7 @@ import { backend_url } from "../../server";
 import { imageUrl } from "../../utils/imageUrl";
 import Ratings from "../Products/Ratings";
 import { getAllEventsShop } from "../../redux/actions/event";
+import { formatDate } from "../../utils/date";
 
 
 
@@ -127,7 +128,7 @@ const ShopProfileData = ({ isOwner }) => {
                                     </div>
                                     <p className="font-[400] text-[#000000a7]">{item?.comment}</p>
 
-                                    <p className="text-[#000000a7] text-[14px]">{item.createdAt.substring(0, 10)}</p>
+                                    <p className="text-[#000000a7] text-[14px]">{formatDate(item.createdAt)}</p>
 
 
                                 </div>

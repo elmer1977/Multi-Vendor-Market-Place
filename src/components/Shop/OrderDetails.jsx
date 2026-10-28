@@ -9,6 +9,7 @@ import { imageUrl } from "../../utils/imageUrl";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { useDispatch, useSelector } from "react-redux";
 import { formatPrice, getOrderItemPrice } from "../../utils/currency";
+import { formatDate } from "../../utils/date";
 
 const OrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
@@ -83,7 +84,7 @@ const OrderDetails = () => {
           order ID: <span>#{data?._id?.slice(0, 8)}</span>
         </h5>
         <h5 className="text-[#000000084]">
-          Placed On: <span>{data?.createdAt?.slice(0, 10)}</span>
+          Placed On: <span>{formatDate(data?.createdAt)}</span>
         </h5>
       </div>
 

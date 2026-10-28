@@ -8,6 +8,7 @@ import { imageUrl } from "../../utils/imageUrl";
 import styles from "../../styles/styles";
 import Loader from "../Layout/Loader";
 import { clearSellerToken } from "../../utils/authTokens";
+import { formatDate } from "../../utils/date";
 
 
 
@@ -100,7 +101,7 @@ const ShopInfo = ({ isOwner }) => {
                         </div>
                         <div className="p-3">
                             <h5 className="font-[600]">Joined On</h5>
-                            <h4 className="text-[#000000b0]">{data?.createdAt?.slice(0, 10)}</h4>
+                            <h4 className="text-[#000000b0]">{formatDate(data?.createdAt)}</h4>
                         </div>
                         {isOwner && (
                             <div className="py-3 px-4">

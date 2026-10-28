@@ -11,6 +11,7 @@ import { getAllOrdersOfUser } from "../redux/actions/order";
 import { useDispatch, useSelector } from "react-redux";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { formatPrice, getOrderItemPrice } from "../utils/currency";
+import { formatDate } from "../utils/date";
 
 const UserOrderDetails = () => {
   const { orders } = useSelector((state) => state.order);
@@ -119,7 +120,7 @@ const UserOrderDetails = () => {
           order ID: <span>#{data?._id?.slice(0, 8)}</span>
         </h5>
         <h5 className="text-[#000000084]">
-          Placed On: <span>{data?.createdAt?.slice(0, 10)}</span>
+          Placed On: <span>{formatDate(data?.createdAt)}</span>
         </h5>
       </div>
 

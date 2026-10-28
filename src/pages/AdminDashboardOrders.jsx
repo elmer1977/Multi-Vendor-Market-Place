@@ -5,6 +5,7 @@ import { DataGrid } from "@material-ui/data-grid";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfAdmin } from "../redux/actions/order";
 import { formatPrice } from "../utils/currency";
+import { formatDate } from "../utils/date";
 
 const AdminDashboardOrders = () => {
   const dispatch = useDispatch();
@@ -63,7 +64,7 @@ const AdminDashboardOrders = () => {
         itemsQty: item?.cart?.reduce((acc, item) => acc + item.qty, 0),
         total: formatPrice(item?.totalPrice),
         status: item?.status,
-        createdAt: item?.createdAt.slice(0, 10),
+        createdAt: formatDate(item?.createdAt),
       });
     });
   return (

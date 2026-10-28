@@ -5,6 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { categoriesData } from "../../static/data";
 import { toast } from "react-toastify";
 import { createevent } from "../../redux/actions/event";
+import {
+    addDaysToDate,
+    getLocalDateString,
+    parseDateInput,
+} from "../../utils/date";
 
 const CreateEvent = () => {
     const { seller } = useSelector((state) => state.seller);
@@ -19,27 +24,22 @@ const CreateEvent = () => {
     const [tags, setTags] = useState("");
     const [price, setPrice] = useState("");
     const [stock, setStock] = useState();
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
 
     const handleStartDateChange = (e) => {
-        const startDate = new Date(e.target.value);
-        const minEndDate = new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000);
-        setStartDate(startDate);
-        setEndDate(null);
-        document.getElementById("end-date").min = minEndDate.toISOString().slice(0, 10);
-
-
+        setStartDate(e.target.value);
+        setEndDate("");
     }
 
     const handleEndDateChange = (e) => {
-        const endDate = new Date(e.target.value);
-        setEndDate(endDate);
+        setEndDate(e.target.value);
     };
 
-    const today = new Date().toISOString().slice(0, 10);
-
-    const minEndDate = startDate ? new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10) : "";
+    const today = getLocalDateString();
+    const startDateISO = parseDateInput(startDate);
+    const endDateISO = parseDateInput(endDate);
+    const minEndDate = startDateISO ? addDaysToDate(startDateISO, 3) : "";
 
     useEffect(() => {
         if (error) {
@@ -64,6 +64,19 @@ const CreateEvent = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (!startDateISO || !endDateISO) {
+            toast.error("Enter event dates in MM-DD-YYYY format.");
+            return;
+        }
+        if (startDateISO < today) {
+            toast.error("The event start date cannot be in the past.");
+            return;
+        }
+        if (endDateISO < minEndDate) {
+            toast.error("The event must end at least 3 days after it starts.");
+            return;
+        }
+
         const newForm = new FormData();
 
         images.forEach((image) => {
@@ -77,8 +90,8 @@ const CreateEvent = () => {
         newForm.append("discountPrice", price);
         newForm.append("stock", stock);
         newForm.append("shopId", seller._id);
-        newForm.append("start_Date", startDate.toISOString());
-        newForm.append("Finish_Date", endDate.toISOString());
+        newForm.append("start_Date", `${startDateISO}T00:00:00.000Z`);
+        newForm.append("Finish_Date", `${endDateISO}T00:00:00.000Z`);
         dispatch(createevent(newForm));
     };
 
@@ -186,14 +199,15 @@ const CreateEvent = () => {
                         Event Start Date <span className="text-red-500">*</span>
                     </label>
                     <input
-                        type="date"
+                        type="text"
                         name="price"
                         id="start-date"
-                        value={startDate ? startDate.toISOString().slice(0, 10) : ""}
+                        value={startDate}
                         className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         onChange={handleStartDateChange}
-                        min={today}
-                        placeholder="Enter your event product stock..."
+                        inputMode="numeric"
+                        placeholder="MM-DD-YYYY"
+                        required
                     />
                 </div>
                 <br />
@@ -202,14 +216,15 @@ const CreateEvent = () => {
                         Event End Date <span className="text-red-500">*</span>
                     </label>
                     <input
-                        type="date"
+                        type="text"
                         name="price"
                         id="end-date"
-                        value={endDate ? endDate.toISOString().slice(0, 10) : ""}
+                        value={endDate}
                         className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         onChange={handleEndDateChange}
-                        min={minEndDate}
-                        placeholder="Enter your event product stock..."
+                        inputMode="numeric"
+                        placeholder="MM-DD-YYYY"
+                        required
                     />
                 </div>
                 <br />
