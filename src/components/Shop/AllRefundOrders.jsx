@@ -8,6 +8,8 @@ import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { formatPrice } from "../../utils/currency";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { compareNumericValues } from "../../utils/tableSort";
+import { compareFormattedDates } from "../../utils/tableSort";
+import { formatDate } from "../../utils/date";
 
 const AllRefundOrders = () => {
     const { orders, isLoading } = useSelector((state) => state.order);
@@ -29,11 +31,19 @@ const AllRefundOrders = () => {
             headerName: "Status",
             minWidth: 130,
             flex: 0.7,
+            sortable: true,
             cellClassName: (params) => {
                 return params.getValue(params.id, "status") === "Delivered"
                     ? "greenColor"
                     : "redColor";
             },
+        },
+        {
+            field: "createdAt",
+            headerName: "Order Date",
+            minWidth: 130,
+            flex: 0.8,
+            sortComparator: compareFormattedDates,
         },
         {
             field: "itemsQty",
@@ -82,6 +92,7 @@ const AllRefundOrders = () => {
                 itemsQty: item.cart.length,
                 total: formatPrice(item.totalPrice),
                 status: item.status,
+                createdAt: formatDate(item.createdAt),
             });
         });
 

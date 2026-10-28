@@ -179,6 +179,7 @@ const AllUsers = () => {
       type: "text",
       minWidth: 130,
       flex: 0.7,
+      sortable: true,
     },
     {
       field: "joinedAt",
@@ -187,6 +188,7 @@ const AllUsers = () => {
       minWidth: 130,
       flex: 0.8,
       sortComparator: compareFormattedDates,
+      sortable: true,
     },
     ...(isSuperAdmin
       ? [

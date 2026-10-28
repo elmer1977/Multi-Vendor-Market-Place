@@ -20,7 +20,11 @@ import axios from 'axios';
 import { Country, State } from "country-state-city";
 import { getAllOrdersOfUser } from '../../redux/actions/order';
 import { formatPrice } from "../../utils/currency";
-import { compareNumericValues } from "../../utils/tableSort";
+import {
+    compareFormattedDates,
+    compareNumericValues,
+} from "../../utils/tableSort";
+import { formatDate } from "../../utils/date";
 
 
 const ProfileContent = ({ active }) => {
@@ -232,11 +236,19 @@ const AllOrders = () => {
             headerName: "Status",
             minWidth: 130,
             flex: 0.7,
+            sortable: true,
             cellClassName: (params) => {
                 return params.getValue(params.id, "status") === "Delivered"
                     ? "greenColor"
                     : "redColor";
             },
+        },
+        {
+            field: "createdAt",
+            headerName: "Order Date",
+            minWidth: 130,
+            flex: 0.8,
+            sortComparator: compareFormattedDates,
         },
         {
             field: "itemsQty",
@@ -285,6 +297,7 @@ const AllOrders = () => {
                 itemsQty: item.cart.length,
                 total: formatPrice(item.totalPrice),
                 status: item.status,
+                createdAt: formatDate(item.createdAt),
             });
         });
 
@@ -327,11 +340,19 @@ const AllRefundOrders = () => {
             headerName: "Status",
             minWidth: 130,
             flex: 0.7,
+            sortable: true,
             cellClassName: (params) => {
                 return params.getValue(params.id, "status") === "Delivered"
                     ? "greenColor"
                     : "redColor";
             },
+        },
+        {
+            field: "createdAt",
+            headerName: "Order Date",
+            minWidth: 130,
+            flex: 0.8,
+            sortComparator: compareFormattedDates,
         },
         {
             field: "itemsQty",
@@ -380,6 +401,7 @@ const AllRefundOrders = () => {
                 itemsQty: item.cart.length,
                 total: formatPrice(item.totalPrice),
                 status: item.status,
+                createdAt: formatDate(item.createdAt),
             });
         });
 
@@ -418,11 +440,19 @@ const TrackOrder = () => {
             headerName: "Status",
             minWidth: 150,
             flex: 0.7,
+            sortable: true,
             cellClassName: (params) => {
                 return params.getValue(params.id, "status") === "Delivered"
                     ? "greenColor"
                     : "redColor";
             },
+        },
+        {
+            field: "createdAt",
+            headerName: "Order Date",
+            minWidth: 130,
+            flex: 0.8,
+            sortComparator: compareFormattedDates,
         },
         {
             field: "itemsQty",
@@ -471,6 +501,7 @@ const TrackOrder = () => {
                 itemsQty: item.cart.length,
                 total: formatPrice(item.totalPrice),
                 status: item.status,
+                createdAt: formatDate(item.createdAt),
             });
         });
 
