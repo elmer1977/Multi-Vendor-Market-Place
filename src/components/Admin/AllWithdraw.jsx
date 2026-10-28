@@ -9,6 +9,10 @@ import styles from "../../styles/styles";
 import { toast } from "react-toastify";
 import { formatPrice } from "../../utils/currency";
 import { formatDate } from "../../utils/date";
+import {
+  compareFormattedDates,
+  compareNumericValues,
+} from "../../utils/tableSort";
 
 const AllWithdraw = () => {
   const [data, setData] = useState([]);
@@ -48,6 +52,7 @@ const AllWithdraw = () => {
       headerName: "Amount",
       minWidth: 100,
       flex: 0.6,
+      sortComparator: compareNumericValues,
     },
     {
       field: "status",
@@ -62,6 +67,7 @@ const AllWithdraw = () => {
       type: "number",
       minWidth: 130,
       flex: 0.6,
+      sortComparator: compareFormattedDates,
     },
     {
       field: " ",

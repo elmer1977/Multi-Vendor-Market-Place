@@ -9,6 +9,7 @@ import styles from "../../styles/styles";
 import Loader from "../Layout/Loader";
 import { server } from "../../server";
 import { toast } from "react-toastify";
+import { compareNumericValues } from "../../utils/tableSort";
 
 const AllCoupons = () => {
     const [open, setOpen] = useState(false);
@@ -85,6 +86,7 @@ const AllCoupons = () => {
             headerName: "Value",
             minWidth: 100,
             flex: 0.6,
+            sortComparator: compareNumericValues,
         },
         {
             field: "Delete",

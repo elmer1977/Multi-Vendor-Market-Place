@@ -7,6 +7,7 @@ import Loader from "../Layout/Loader";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { formatPrice } from "../../utils/currency";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import { compareNumericValues } from "../../utils/tableSort";
 
 const AllRefundOrders = () => {
     const { orders, isLoading } = useSelector((state) => state.order);
@@ -48,6 +49,7 @@ const AllRefundOrders = () => {
             type: "number",
             minWidth: 130,
             flex: 0.8,
+            sortComparator: compareNumericValues,
         },
 
         {

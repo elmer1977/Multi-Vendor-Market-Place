@@ -9,6 +9,7 @@ import { formatPrice } from "../../utils/currency";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
+import { compareNumericValues } from "../../utils/tableSort";
 
 const DashboardHero = () => {
     const dispatch = useDispatch();
@@ -53,6 +54,7 @@ const DashboardHero = () => {
             type: "number",
             minWidth: 130,
             flex: 0.8,
+            sortComparator: compareNumericValues,
         },
 
         {

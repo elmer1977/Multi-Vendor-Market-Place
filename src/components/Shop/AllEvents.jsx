@@ -9,6 +9,7 @@ import { getAllProductsShop } from "../../redux/actions/product";
 import { deleteProduct } from "../../redux/actions/product";
 import Loader from "../Layout/Loader";
 import { formatPrice, getProductPrice } from "../../utils/currency";
+import { compareNumericValues } from "../../utils/tableSort";
 
 const AllEvents = () => {
   const { events, isLoading } = useSelector((state) => state.events);
@@ -38,6 +39,7 @@ const AllEvents = () => {
       headerName: "Price",
       minWidth: 100,
       flex: 0.6,
+      sortComparator: compareNumericValues,
     },
     {
       field: "Stock",

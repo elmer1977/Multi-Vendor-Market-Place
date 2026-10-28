@@ -11,6 +11,7 @@ import axios from "axios";
 import { server } from "../../server";
 import { useState } from "react";
 import { formatPrice, getProductPrice } from "../../utils/currency";
+import { compareNumericValues } from "../../utils/tableSort";
 
 const AllProducts = () => {
   const [data, setData] = useState([]);
@@ -36,6 +37,7 @@ const AllProducts = () => {
       headerName: "Price",
       minWidth: 100,
       flex: 0.6,
+      sortComparator: compareNumericValues,
     },
     {
       field: "Stock",

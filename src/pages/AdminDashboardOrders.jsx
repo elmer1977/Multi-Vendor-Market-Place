@@ -6,6 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfAdmin } from "../redux/actions/order";
 import { formatPrice } from "../utils/currency";
 import { formatDate } from "../utils/date";
+import {
+  compareFormattedDates,
+  compareNumericValues,
+} from "../utils/tableSort";
 
 const AdminDashboardOrders = () => {
   const dispatch = useDispatch();
@@ -46,6 +50,7 @@ const AdminDashboardOrders = () => {
       type: "number",
       minWidth: 130,
       flex: 0.8,
+      sortComparator: compareNumericValues,
     },
     {
       field: "createdAt",
@@ -53,6 +58,7 @@ const AdminDashboardOrders = () => {
       type: "number",
       minWidth: 130,
       flex: 0.8,
+      sortComparator: compareFormattedDates,
     },
   ];
 

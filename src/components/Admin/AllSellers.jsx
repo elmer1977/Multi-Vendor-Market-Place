@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { getAllSellers } from "../../redux/actions/sellers";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../utils/date";
+import { compareFormattedDates } from "../../utils/tableSort";
 
 const AllSellers = () => {
   const dispatch = useDispatch();
@@ -108,6 +109,7 @@ const AllSellers = () => {
       type: "text",
       minWidth: 130,
       flex: 0.8,
+      sortComparator: compareFormattedDates,
     },
     {
       field: "  ",

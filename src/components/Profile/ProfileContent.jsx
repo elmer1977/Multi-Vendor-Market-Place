@@ -20,6 +20,7 @@ import axios from 'axios';
 import { Country, State } from "country-state-city";
 import { getAllOrdersOfUser } from '../../redux/actions/order';
 import { formatPrice } from "../../utils/currency";
+import { compareNumericValues } from "../../utils/tableSort";
 
 
 const ProfileContent = ({ active }) => {
@@ -251,6 +252,7 @@ const AllOrders = () => {
             type: "number",
             minWidth: 130,
             flex: 0.8,
+            sortComparator: compareNumericValues,
         },
 
         {
@@ -345,6 +347,7 @@ const AllRefundOrders = () => {
             type: "number",
             minWidth: 130,
             flex: 0.8,
+            sortComparator: compareNumericValues,
         },
 
         {
@@ -435,6 +438,7 @@ const TrackOrder = () => {
             type: "number",
             minWidth: 130,
             flex: 0.8,
+            sortComparator: compareNumericValues,
         },
 
         {

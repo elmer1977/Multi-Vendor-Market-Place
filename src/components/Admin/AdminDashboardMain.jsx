@@ -11,6 +11,10 @@ import Loader from "../Layout/Loader";
 import { getAllSellers } from "../../redux/actions/sellers";
 import { formatPrice } from "../../utils/currency";
 import { formatDate } from "../../utils/date";
+import {
+  compareFormattedDates,
+  compareNumericValues,
+} from "../../utils/tableSort";
 
 const AdminDashboardMain = () => {
   const dispatch = useDispatch();
@@ -59,6 +63,7 @@ const AdminDashboardMain = () => {
       type: "number",
       minWidth: 130,
       flex: 0.8,
+      sortComparator: compareNumericValues,
     },
     {
       field: "createdAt",
@@ -66,6 +71,7 @@ const AdminDashboardMain = () => {
       type: "number",
       minWidth: 130,
       flex: 0.8,
+      sortComparator: compareFormattedDates,
     },
   ];
 

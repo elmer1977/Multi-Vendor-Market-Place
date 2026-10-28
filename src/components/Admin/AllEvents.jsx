@@ -6,6 +6,7 @@ import { AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { server } from "../../server";
 import { formatPrice, getProductPrice } from "../../utils/currency";
+import { compareNumericValues } from "../../utils/tableSort";
 
 const AllEvents = () => {
   const [events, setEvents] = useState([]);
@@ -30,6 +31,7 @@ const AllEvents = () => {
       headerName: "Price",
       minWidth: 100,
       flex: 0.6,
+      sortComparator: compareNumericValues,
     },
     {
       field: "Stock",

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers } from "../../redux/actions/user";
 import { DataGrid } from "@material-ui/data-grid";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import {
+  AiOutlineDelete,
+  AiOutlineEdit,
+  AiOutlineKey,
+} from "react-icons/ai";
 import { Button } from "@material-ui/core";
 import styles from "../../styles/styles";
 import { RxCross1 } from "react-icons/rx";
@@ -10,10 +14,11 @@ import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
 import { formatDate } from "../../utils/date";
+import { compareFormattedDates } from "../../utils/tableSort";
 
 const AllUsers = () => {
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.user);
+  const { users, user: currentUser } = useSelector((state) => state.user);
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
@@ -37,6 +42,11 @@ const AllUsers = () => {
   const refreshUsers = () => {
     dispatch(getAllUsers());
   };
+  const isSuperAdmin = users?.some(
+    (account) =>
+      account.isProtectedAdmin &&
+      String(account._id) === String(currentUser?._id)
+  );
 
   const handleDelete = async (record) => {
     if (record?.isProtectedAdmin) {
@@ -88,6 +98,33 @@ const AllUsers = () => {
       refreshUsers();
     } catch (error) {
       toast.error(error.response?.data?.message || "Update failed");
+    }
+  };
+
+  const handleResetPassword = async (record) => {
+    if (!isSuperAdmin) {
+      toast.error("Only the Super Admin can reset account passwords");
+      return;
+    }
+
+    const accountType = record.entityType === "seller" ? "seller" : "user";
+    if (
+      !window.confirm(
+        `Send a password reset link to ${record.email}?`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const { data } = await axios.post(
+        `${server}/user/admin/reset-account-password`,
+        { entityType: accountType, entityId: record.entityId },
+        { withCredentials: true }
+      );
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Password reset request failed");
     }
   };
 
@@ -149,7 +186,27 @@ const AllUsers = () => {
       type: "text",
       minWidth: 130,
       flex: 0.8,
+      sortComparator: compareFormattedDates,
     },
+    ...(isSuperAdmin
+      ? [
+          {
+            field: "resetPassword",
+            flex: 0.9,
+            minWidth: 160,
+            headerName: "Reset Password",
+            sortable: false,
+            renderCell: (params) => (
+              <Button
+                title={`Email a password reset link to ${params.row.email}`}
+                onClick={() => handleResetPassword(params.row)}
+              >
+                <AiOutlineKey size={20} />
+              </Button>
+            ),
+          },
+        ]
+      : []),
     {
       field: "edit",
       flex: 0.8,
