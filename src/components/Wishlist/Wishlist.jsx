@@ -9,6 +9,7 @@ import { removeFromWishlist } from "../../redux/actions/wishlist";
 import { addTocart } from "../../redux/actions/cart";
 import { backend_url } from "../../server";
 import { imageUrl } from "../../utils/imageUrl";
+import { formatPrice, getProductPrice } from "../../utils/currency";
 
 const Wishlist = ({ setOpenWishlist }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -80,7 +81,7 @@ const Wishlist = ({ setOpenWishlist }) => {
 
 const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
   const [value, setValue] = useState(1);
-  const totalPrice = data.discountPrice * value;
+  const totalPrice = getProductPrice(data) * value;
 
   return (
     <>
@@ -100,7 +101,7 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
             <h1>{data.name}</h1>
 
             <h4 className="font-[600] pt-3 800px:pt-[3px] text-[17px] text-[#d02222] font-Roboto">
-              US${totalPrice}
+              {formatPrice(totalPrice)}
             </h4>
           </div>
 

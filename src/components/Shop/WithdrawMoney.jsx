@@ -8,6 +8,7 @@ import { server } from "../../server";
 import { toast } from "react-toastify";
 import { loadSeller } from "../../redux/actions/user";
 import { AiOutlineDelete } from "react-icons/ai";
+import { formatPrice } from "../../utils/currency";
 
 const WithdrawMoney = () => {
   const [open, setOpen] = useState(false);
@@ -291,7 +292,7 @@ const WithdrawMoney = () => {
                       </div>
                     </div>
                     <br />
-                    <h4>Available Balance: {availableBalance}$</h4>
+                    <h4>Available Balance: {formatPrice(availableBalance)}</h4>
                     <br />
                     <div className="800px:flex w-full items-center">
                       <input

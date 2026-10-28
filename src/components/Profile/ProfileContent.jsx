@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import axios from 'axios';
 import { Country, State } from "country-state-city";
 import { getAllOrdersOfUser } from '../../redux/actions/order';
+import { formatPrice } from "../../utils/currency";
 
 
 const ProfileContent = ({ active }) => {
@@ -280,7 +281,7 @@ const AllOrders = () => {
             row.push({
                 id: item._id,
                 itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
+                total: formatPrice(item.totalPrice),
                 status: item.status,
             });
         });
@@ -374,7 +375,7 @@ const AllRefundOrders = () => {
             row.push({
                 id: item._id,
                 itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
+                total: formatPrice(item.totalPrice),
                 status: item.status,
             });
         });
@@ -464,7 +465,7 @@ const TrackOrder = () => {
             row.push({
                 id: item._id,
                 itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
+                total: formatPrice(item.totalPrice),
                 status: item.status,
             });
         });

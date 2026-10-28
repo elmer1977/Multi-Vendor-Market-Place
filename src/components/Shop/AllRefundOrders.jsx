@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Loader from "../Layout/Loader";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
+import { formatPrice } from "../../utils/currency";
 import { AiOutlineArrowRight } from "react-icons/ai";
 
 const AllRefundOrders = () => {
@@ -77,7 +78,7 @@ const AllRefundOrders = () => {
             row.push({
                 id: item._id,
                 itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
+                total: formatPrice(item.totalPrice),
                 status: item.status,
             });
         });

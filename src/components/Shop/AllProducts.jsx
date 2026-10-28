@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { deleteProduct } from "../../redux/actions/product";
 import Loader from "../Layout/Loader";
+import { formatPrice, getProductPrice } from "../../utils/currency";
 
 const AllProducts = () => {
   const { products, isLoading } = useSelector((state) => state.products);
@@ -97,7 +98,7 @@ const AllProducts = () => {
       row.push({
         id: item._id,
         name: item.name,
-        price: "US$ " + item.discountPrice,
+        price: formatPrice(getProductPrice(item)),
         Stock: item.stock,
         sold: item.sold_out,
       });

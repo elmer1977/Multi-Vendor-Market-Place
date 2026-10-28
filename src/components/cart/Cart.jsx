@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { backend_url } from "../../server";
 import { imageUrl } from "../../utils/imageUrl";
 import { addTocart, removeFromCart } from "../../redux/actions/cart";
+import { formatPrice, getProductPrice } from "../../utils/currency";
 
 const Cart = ({ setOpenCart }) => {
   const { cart } = useSelector((state) => state.cart);
@@ -21,7 +22,7 @@ const Cart = ({ setOpenCart }) => {
 
   // Total price
   const totalPrice = cart.reduce(
-    (acc, item) => acc + item.qty * item.discountPrice,
+    (acc, item) => acc + item.qty * getProductPrice(item),
     0
   );
 
@@ -85,7 +86,7 @@ const Cart = ({ setOpenCart }) => {
                   className={`h-[45px] flex items-center justify-center w-[100%] bg-[#e44343] rounded-[5px]`}
                 >
                   <h1 className="text-[#fff] text-[18px] font-[600]">
-                    Checkout Now (USD${totalPrice})
+                    Checkout Now ({formatPrice(totalPrice)})
                   </h1>
                 </div>
               </Link>
@@ -99,7 +100,7 @@ const Cart = ({ setOpenCart }) => {
 
 const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
   const [value, setValue] = useState(data.qty);
-  const totalPrice = data.discountPrice * value;
+  const totalPrice = getProductPrice(data) * value;
 
   const increment = (data) => {
     if (value >= data.stock) {
@@ -150,11 +151,10 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           <div className="pl-[15px]">
             <h1>{data.name}</h1>
             <h4 className="font-[400] text-[15px] text-[#00000082]">
-              {" "}
-              ${data.discountPrice} * {value}
+              {formatPrice(getProductPrice(data))} * {value}
             </h4>
             <h4 className="font-[400] text-[17px] pt-[3px]  text-[#d02222] font-Roboto ">
-              US${totalPrice}
+              {formatPrice(totalPrice)}
             </h4>
           </div>
           <RxCross1

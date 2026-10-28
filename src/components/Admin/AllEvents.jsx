@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { server } from "../../server";
+import { formatPrice, getProductPrice } from "../../utils/currency";
 
 const AllEvents = () => {
   const [events, setEvents] = useState([]);
@@ -73,7 +74,7 @@ const AllEvents = () => {
       row.push({
         id: item._id,
         name: item.name,
-        price: "US$ " + item.discountPrice,
+        price: formatPrice(getProductPrice(item)),
         Stock: item.stock,
         sold: item.sold_out,
       });

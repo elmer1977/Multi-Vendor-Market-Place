@@ -24,7 +24,7 @@ const ProductDetailsPage = () => {
     useEffect(() => {
         if (eventData !== null) {
             const data = allEvents && allEvents.find((i) => i._id === id);
-            setData(data);
+            setData(data ? { ...data, isEvent: true } : data);
         } else {
             const data = allProducts && allProducts.find((i) => i._id === id);
             setData(data);
@@ -34,7 +34,7 @@ const ProductDetailsPage = () => {
         the component is rendered. This ensures that when the user navigates to the
         `ProductDetailsPage`, the page starts at the top rather than at the previous scroll position. */
         window.scrollTo(0, 0)
-    }, [allProducts, allEvents]);
+    }, [allProducts, allEvents, eventData, id]);
 
 
 

@@ -6,6 +6,7 @@ import Header from "../components/Layout/Header";
 import Loader from "../components/Layout/Loader";
 import ProductCard from "../components/Route/ProductCard/ProductCard";
 import styles from "../styles/styles";
+import { getProductPrice } from "../utils/currency";
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
@@ -35,12 +36,12 @@ const ProductsPage = () => {
 
     if (minPrice !== "") {
       const min = Number(minPrice);
-      products = products.filter((product) => product.discountPrice >= min);
+      products = products.filter((product) => getProductPrice(product) >= min);
     }
 
     if (maxPrice !== "") {
       const max = Number(maxPrice);
-      products = products.filter((product) => product.discountPrice <= max);
+      products = products.filter((product) => getProductPrice(product) <= max);
     }
 
     if (stockFilter === "inStock") {
@@ -50,9 +51,9 @@ const ProductsPage = () => {
     }
 
     if (sortOption === "priceAsc") {
-      products.sort((a, b) => a.discountPrice - b.discountPrice);
+      products.sort((a, b) => getProductPrice(a) - getProductPrice(b));
     } else if (sortOption === "priceDesc") {
-      products.sort((a, b) => b.discountPrice - a.discountPrice);
+      products.sort((a, b) => getProductPrice(b) - getProductPrice(a));
     } else if (sortOption === "oldest") {
       products.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     } else {

@@ -8,6 +8,7 @@ import { backend_url, server } from "../../server";
 import { imageUrl } from "../../utils/imageUrl";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { useDispatch, useSelector } from "react-redux";
+import { formatPrice, getOrderItemPrice } from "../../utils/currency";
 
 const OrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
@@ -100,14 +101,14 @@ const OrderDetails = () => {
             <div className="w-full">
               <h5 className="pl-3 text-[20px]">{item.name}</h5>
               <h5 className="pl-3 text-[20px] text-[#00000091]">
-                US${item.discountPrice} x {item.qty}
+                {formatPrice(getOrderItemPrice(item))} x {item.qty}
               </h5>
             </div>
           </div>
         ))}
       <div className="border-t w-full text-right">
         <h5>
-          Total Price: <strong>US${data?.totalPrice}</strong>
+          Total Price: <strong>{formatPrice(data?.totalPrice)}</strong>
         </h5>
       </div>
       <br />

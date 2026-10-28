@@ -14,10 +14,11 @@ import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
 import { RxCross1 } from "react-icons/rx";
+import { formatPrice } from "../../utils/currency";
 
 
 const Payment = () => {
-    const [orderData, setOrderData] = useState([]);
+    const [orderData, setOrderData] = useState(null);
     const [open, setOpen] = useState(false);
     const { user } = useSelector((state) => state.user);
     const navigate = useNavigate();
@@ -25,9 +26,34 @@ const Payment = () => {
     const elements = useElements();
 
     useEffect(() => {
-        const orderData = JSON.parse(localStorage.getItem("latestOrder"));
-        setOrderData(orderData);
-    }, []);
+        const latestOrder = JSON.parse(localStorage.getItem("latestOrder"));
+        if (!latestOrder?.cart?.length) {
+            toast.error("Your cart is empty.");
+            navigate("/checkout");
+            return;
+        }
+
+        axios
+            .post(`${server}/payment/quote`, { cart: latestOrder.cart })
+            .then(({ data }) => {
+                const pricedOrder = {
+                    ...latestOrder,
+                    cart: data.cart,
+                    subTotalPrice: data.subTotalPrice,
+                    shipping: data.shipping,
+                    totalPrice: data.totalPrice,
+                };
+                setOrderData(pricedOrder);
+                localStorage.setItem("latestOrder", JSON.stringify(pricedOrder));
+            })
+            .catch((error) => {
+                toast.error(
+                    error.response?.data?.message ||
+                        "Unable to calculate your order total."
+                );
+                navigate("/checkout");
+            });
+    }, [navigate]);
 
     // Pay-pal
     const createOrder = (data, actions) => {
@@ -37,7 +63,7 @@ const Payment = () => {
                     {
                         description: "Sunflower",
                         amount: {
-                            currency_code: "USD",
+                            currency_code: "PHP",
                             value: orderData?.totalPrice,
                         },
                     },
@@ -96,15 +122,14 @@ const Payment = () => {
 
     }
 
-    const paymentData = {
-        amount: Math.round(orderData?.totalPrice * 100),
-    }
-
-
-
     const paymentHandler = async (e) => {
         e.preventDefault();
         try {
+            if (!orderData?.cart?.length) {
+                toast.error("Your order total is still being calculated.");
+                return;
+            }
+
             const config = {
                 headers: {
                     "Content-Type": "application/json",
@@ -113,7 +138,7 @@ const Payment = () => {
 
             const { data } = await axios.post(
                 `${server}/payment/process`,
-                paymentData,
+                { cart: orderData.cart },
                 config
             );
 
@@ -149,7 +174,7 @@ const Payment = () => {
                 }
             }
         } catch (error) {
-            toast.error(error);
+            toast.error(error.response?.data?.message || error.message);
         }
     };
 
@@ -369,6 +394,7 @@ const PaymentInfo = ({
                                             options={{
                                                 "client-id":
                                                     "AXRhO4eNGo3L8MUFazEFnW9hNwBP2rTwUWNqMMRcFtjpbCrDVt6vS8HoWa7hyLlfO0fxG3OU_9zit7KN",
+                                                currency: "PHP",
                                             }}
                                         >
                                             <PayPalButtons
@@ -426,26 +452,21 @@ const PaymentInfo = ({
 
 
 const CartData = ({ orderData }) => {
-    const shipping = orderData?.shipping?.toFixed(2);
+    if (!orderData) return null;
+
     return (
         <div className="w-full bg-[#fff] rounded-md p-5 pb-8">
             <div className="flex justify-between">
                 <h3 className="text-[16px] font-[400] text-[#000000a4]">subtotal:</h3>
-                <h5 className="text-[18px] font-[600]">${orderData?.subTotalPrice}</h5>
+                <h5 className="text-[18px] font-[600]">{formatPrice(orderData.subTotalPrice)}</h5>
             </div>
             <br />
             <div className="flex justify-between">
                 <h3 className="text-[16px] font-[400] text-[#000000a4]">shipping:</h3>
-                <h5 className="text-[18px] font-[600]">${shipping}</h5>
-            </div>
-            <br />
-            <div className="flex justify-between border-b pb-3">
-                <h3 className="text-[16px] font-[400] text-[#000000a4]">Discount:</h3>
-                <h5 className="text-[18px] font-[600]">{orderData?.discountPrice ? "$" + orderData.discountPrice : "-"}
-                </h5>
+                <h5 className="text-[18px] font-[600]">{formatPrice(orderData.shipping)}</h5>
             </div>
             <h5 className="text-[18px] font-[600] text-end pt-3">
-                ${orderData?.totalPrice}
+                {formatPrice(orderData.totalPrice)}
             </h5>
             <br />
 

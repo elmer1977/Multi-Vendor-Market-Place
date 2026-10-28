@@ -10,6 +10,7 @@ import Loader from "../Layout/Loader";
 import axios from "axios";
 import { server } from "../../server";
 import { useState } from "react";
+import { formatPrice, getProductPrice } from "../../utils/currency";
 
 const AllProducts = () => {
   const [data, setData] = useState([]);
@@ -79,7 +80,7 @@ const AllProducts = () => {
       row.push({
         id: item._id,
         name: item.name,
-        price: "US$ " + item.discountPrice,
+        price: formatPrice(getProductPrice(item)),
         Stock: item.stock,
         sold: item?.sold_out,
       });

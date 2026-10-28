@@ -4,6 +4,7 @@ import AdminSideBar from "../components/Admin/Layout/AdminSideBar";
 import { DataGrid } from "@material-ui/data-grid";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfAdmin } from "../redux/actions/order";
+import { formatPrice } from "../utils/currency";
 
 const AdminDashboardOrders = () => {
   const dispatch = useDispatch();
@@ -60,7 +61,7 @@ const AdminDashboardOrders = () => {
       row.push({
         id: item._id,
         itemsQty: item?.cart?.reduce((acc, item) => acc + item.qty, 0),
-        total: item?.totalPrice + " $",
+        total: formatPrice(item?.totalPrice),
         status: item?.status,
         createdAt: item?.createdAt.slice(0, 10),
       });

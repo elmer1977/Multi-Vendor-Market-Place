@@ -10,6 +10,7 @@ import { RxCross1 } from "react-icons/rx";
 import { getAllOrdersOfUser } from "../redux/actions/order";
 import { useDispatch, useSelector } from "react-redux";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { formatPrice, getOrderItemPrice } from "../utils/currency";
 
 const UserOrderDetails = () => {
   const { orders } = useSelector((state) => state.order);
@@ -137,7 +138,7 @@ const UserOrderDetails = () => {
               <div className="w-full">
                 <h5 className="pl-3 text-[20px]">{item.name}</h5>
                 <h5 className="pl-3 text-[20px] text-[#00000091]">
-                  US${item.discountPrice} x {item.qty}
+                  {formatPrice(getOrderItemPrice(item))} x {item.qty}
                 </h5>
               </div>
               {!item.isReviewed && data?.status === "Delivered" ? (
@@ -176,7 +177,7 @@ const UserOrderDetails = () => {
               <div>
                 <div className="pl-3 text-[20px]">{selectedItem?.name}</div>
                 <h4 className="pl-3 text-[20px]">
-                  US${selectedItem?.discountPrice} x {selectedItem?.qty}
+                  {formatPrice(getOrderItemPrice(selectedItem))} x {selectedItem?.qty}
                 </h4>
               </div>
             </div>
@@ -241,7 +242,7 @@ const UserOrderDetails = () => {
 
       <div className="border-t w-full text-right">
         <h5>
-          Total Price: <strong>US${data?.totalPrice}</strong>
+          Total Price: <strong>{formatPrice(data?.totalPrice)}</strong>
         </h5>
         <h5 className="mt-2">
           Order status: <strong>{data?.status}</strong>

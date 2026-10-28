@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { MdBorderClear } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
+import { formatPrice } from "../../utils/currency";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
@@ -81,7 +82,7 @@ const DashboardHero = () => {
         row.push({
             id: item._id,
             itemsQty: item.cart.reduce((acc, item) => acc + item.qty, 0),
-            total: "US$ " + item.totalPrice,
+            total: formatPrice(item.totalPrice),
             status: item.status,
         });
     });

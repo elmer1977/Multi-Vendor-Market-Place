@@ -17,8 +17,7 @@ const CreateProduct = () => {
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
     const [tags, setTags] = useState("");
-    const [originalPrice, setOriginalPrice] = useState();
-    const [discountPrice, setDiscountPrice] = useState();
+    const [price, setPrice] = useState("");
     const [stock, setStock] = useState();
 
     useEffect(() => {
@@ -53,8 +52,8 @@ const CreateProduct = () => {
         newForm.append("description", description);
         newForm.append("category", category);
         newForm.append("tags", tags);
-        newForm.append("originalPrice", originalPrice);
-        newForm.append("discountPrice", discountPrice);
+        newForm.append("originalPrice", price);
+        newForm.append("discountPrice", price);
         newForm.append("stock", stock);
         newForm.append("shopId", seller._id);
         dispatch(createProduct(newForm));
@@ -129,28 +128,19 @@ const CreateProduct = () => {
                 </div>
                 <br />
                 <div>
-                    <label className="pb-2">Original Price</label>
-                    <input
-                        type="number"
-                        name="price"
-                        value={originalPrice}
-                        className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        onChange={(e) => setOriginalPrice(e.target.value)}
-                        placeholder="Enter your product price..."
-                    />
-                </div>
-                <br />
-                <div>
                     <label className="pb-2">
-                        Price (With Discount) <span className="text-red-500">*</span>
+                        Price (PHP) <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="number"
                         name="price"
-                        value={discountPrice}
+                        min="0"
+                        step="0.01"
+                        required
+                        value={price}
                         className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        onChange={(e) => setDiscountPrice(e.target.value)}
-                        placeholder="Enter your product price with discount..."
+                        onChange={(e) => setPrice(e.target.value)}
+                        placeholder="Enter your product price..."
                     />
                 </div>
                 <br />

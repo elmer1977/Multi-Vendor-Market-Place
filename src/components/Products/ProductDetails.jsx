@@ -19,6 +19,7 @@ import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "./Ratings";
 import axios from "axios";
+import { formatPrice, getProductPrice } from "../../utils/currency";
 
 const ProductDetails = ({ data }) => {
   const { products } = useSelector((state) => state.products);
@@ -63,7 +64,11 @@ const ProductDetails = ({ data }) => {
       if (data.stock < 1) {
         toast.error("Product stock limited!");
       } else {
-        const cartData = { ...data, qty: count };
+        const cartData = {
+          ...data,
+          isEvent: Boolean(data.start_Date),
+          qty: count,
+        };
         dispatch(addTocart(cartData));
         toast.success("Item added to cart Successfully!");
       }
@@ -173,11 +178,8 @@ const ProductDetails = ({ data }) => {
                 </p>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discountPrice}$
+                    {formatPrice(getProductPrice(data))}
                   </h4>
-                  <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? data.originalPrice + "$" : null}
-                  </h3>
                 </div>
 
                 {/* inc dec option */}

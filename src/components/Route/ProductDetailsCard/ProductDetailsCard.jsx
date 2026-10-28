@@ -6,6 +6,7 @@ import {
     AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
+import { formatPrice, getProductPrice } from "../../../utils/currency";
 import { Link } from "react-router-dom";
 import { backend_url } from "../../../server";
 import { imageUrl } from "../../../utils/imageUrl";
@@ -47,7 +48,11 @@ const ProductDetailsCard = ({ setOpen, data }) => {
             if (data.stock < count) {
                 toast.error("Product stock limited!");
             } else {
-                const cartData = { ...data, qty: count };
+                const cartData = {
+                    ...data,
+                    isEvent: Boolean(data.start_Date),
+                    qty: count,
+                };
                 dispatch(addTocart(cartData));
                 toast.success("Item added to cart Successfully!")
             }
@@ -133,11 +138,8 @@ const ProductDetailsCard = ({ setOpen, data }) => {
 
                                         <div className='flex  pt-3 '>
                                             <h4 className={`${styles.productDiscountPrice}`}>
-                                                {data.discountPrice}$
+                                                {formatPrice(getProductPrice(data))}
                                             </h4>
-                                            <h3 className={`${styles.price}`}>
-                                                {data.originalPrice ? data.originalPrice + "$" : null}
-                                            </h3>
                                         </div>
 
 
