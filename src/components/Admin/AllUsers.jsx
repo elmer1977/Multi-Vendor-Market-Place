@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers } from "../../redux/actions/user";
-import { DataGrid } from "@material-ui/data-grid";
+import FilterableDataGrid from "../common/FilterableDataGrid";
 import {
   AiOutlineDelete,
   AiOutlineEdit,
@@ -298,7 +298,7 @@ const AllUsers = () => {
         </div>
 
         <div className="w-full min-h-[45vh] bg-white rounded">
-          <DataGrid
+          <FilterableDataGrid
             rows={filteredRows}
             columns={columns}
             pageSize={10}

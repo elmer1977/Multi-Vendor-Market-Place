@@ -1,5 +1,5 @@
 import { Button } from "@material-ui/core";
-import { DataGrid } from "@material-ui/data-grid";
+import FilterableDataGrid from "../common/FilterableDataGrid";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -100,7 +100,7 @@ const AllOrders = () => {
                 <Loader />
             ) : (
                 <div className="w-full mx-8 pt-1 mt-10 bg-white">
-                    <DataGrid
+                    <FilterableDataGrid
                         rows={row}
                         columns={columns}
                         pageSize={10}

@@ -1,5 +1,5 @@
 import { Button } from "@material-ui/core";
-import { DataGrid } from "@material-ui/data-grid";
+import FilterableDataGrid from "../common/FilterableDataGrid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -133,7 +133,7 @@ const AllCoupons = () => {
                             <span className="text-white">Create Coupon Code</span>
                         </div>
                     </div>
-                    <DataGrid
+                    <FilterableDataGrid
                         rows={row}
                         columns={columns}
                         pageSize={10}

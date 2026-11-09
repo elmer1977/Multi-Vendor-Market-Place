@@ -11,7 +11,7 @@ import {
 import { AiOutlineArrowRight, AiOutlineCamera, AiOutlineDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import styles from "../../styles/styles";
-import { DataGrid } from "@material-ui/data-grid";
+import FilterableDataGrid from "../common/FilterableDataGrid";
 import { Button } from "@material-ui/core";
 import { RxCross1 } from 'react-icons/rx'
 import { MdTrackChanges } from "react-icons/md";
@@ -305,7 +305,7 @@ const AllOrders = () => {
     return (
         <>
             <div className='pl-8 pt-1'>
-                <DataGrid
+                <FilterableDataGrid
                     rows={row}
                     columns={columns}
                     pageSize={10}
@@ -407,7 +407,7 @@ const AllRefundOrders = () => {
 
     return (
         <div className="pl-8 pt-1">
-            <DataGrid
+            <FilterableDataGrid
                 rows={row}
                 columns={columns}
                 pageSize={10}
@@ -507,7 +507,7 @@ const TrackOrder = () => {
 
     return (
         <div className="pl-8 pt-1">
-            <DataGrid
+            <FilterableDataGrid
                 rows={row}
                 columns={columns}
                 pageSize={10}

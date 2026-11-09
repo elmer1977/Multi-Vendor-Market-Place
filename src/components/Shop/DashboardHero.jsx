@@ -8,7 +8,7 @@ import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { formatPrice } from "../../utils/currency";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { Button } from "@material-ui/core";
-import { DataGrid } from "@material-ui/data-grid";
+import FilterableDataGrid from "../common/FilterableDataGrid";
 import { compareNumericValues } from "../../utils/tableSort";
 import { getCompletedOrderEarnings } from "../../utils/orderEarnings";
 import { compareFormattedDates } from "../../utils/tableSort";
@@ -166,7 +166,7 @@ const DashboardHero = () => {
             <br />
             <h3 className="text-[22px] font-Poppins pb-2">Latest Orders</h3>
             <div className="w-full min-h-[45vh] bg-white rounded">
-                <DataGrid
+                <FilterableDataGrid
                     rows={row}
                     columns={columns}
                     pageSize={10}

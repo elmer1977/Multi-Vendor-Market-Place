@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import AdminHeader from "../components/Layout/AdminHeader";
 import AdminSideBar from "../components/Admin/Layout/AdminSideBar";
-import { DataGrid } from "@material-ui/data-grid";
+import FilterableDataGrid from "../components/common/FilterableDataGrid";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfAdmin } from "../redux/actions/order";
 import { formatPrice } from "../utils/currency";
@@ -84,7 +84,7 @@ const AdminDashboardOrders = () => {
 
           <div className="w-full min-h-[45vh] pt-5 rounded flex justify-center">
             <div className="w-[97%] flex justify-center">
-              <DataGrid
+              <FilterableDataGrid
                 rows={row}
                 columns={columns}
                 pageSize={4}

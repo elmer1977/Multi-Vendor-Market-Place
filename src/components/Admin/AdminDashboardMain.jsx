@@ -3,7 +3,7 @@ import styles from "../../styles/styles";
 import { AiOutlineArrowRight, AiOutlineMoneyCollect } from "react-icons/ai";
 import { MdBorderClear } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { DataGrid } from "@material-ui/data-grid";
+import FilterableDataGrid from "../common/FilterableDataGrid";
 import { Button } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfAdmin } from "../../redux/actions/order";
@@ -153,7 +153,7 @@ const AdminDashboardMain = () => {
           <br />
           <h3 className="text-[22px] font-Poppins pb-2">Latest Orders</h3>
           <div className="w-full min-h-[45vh] bg-white rounded">
-            <DataGrid
+            <FilterableDataGrid
               rows={row}
               columns={columns}
               pageSize={4}
