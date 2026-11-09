@@ -1,13 +1,10 @@
 export const getProductPrice = (item) => {
   const originalPrice = Number(item?.originalPrice);
-  if (Number.isFinite(originalPrice) && originalPrice > 0) {
+  if (Number.isFinite(originalPrice) && originalPrice >= 0) {
     return originalPrice;
   }
 
-  const fallbackPrice = Number(item?.discountPrice);
-  return Number.isFinite(fallbackPrice) && fallbackPrice >= 0
-    ? fallbackPrice
-    : 0;
+  return 0;
 };
 
 export const getOrderItemPrice = (item) => {
