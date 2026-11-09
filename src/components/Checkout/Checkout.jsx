@@ -76,7 +76,7 @@ const Checkout = () => {
     };
 
     const cartTotals = calculateCartTotals(cart);
-    const { subTotalPrice, shipping, totalPrice } = cartTotals;
+    const { subTotalPrice, totalPrice } = cartTotals;
 
     return (
         <div className="w-full flex flex-col items-center py-8">
@@ -103,7 +103,6 @@ const Checkout = () => {
                 <div className="w-full 800px:w-[35%] 800px:mt-0 mt-8">
                     <CartData
                         totalPrice={totalPrice}
-                        shipping={shipping}
                         subTotalPrice={subTotalPrice}
                     />
                 </div>
@@ -280,7 +279,6 @@ const ShippingInfo = ({
 
 const CartData = ({
     totalPrice,
-    shipping,
     subTotalPrice,
 }) => {
     return (
@@ -288,11 +286,6 @@ const CartData = ({
             <div className="flex justify-between">
                 <h3 className="text-[16px] font-[400] text-[#000000a4]">subtotal:</h3>
                 <h5 className="text-[18px] font-[600]">{formatPrice(subTotalPrice)}</h5>
-            </div>
-            <br />
-            <div className="flex justify-between">
-                <h3 className="text-[16px] font-[400] text-[#000000a4]">shipping:</h3>
-                <h5 className="text-[18px] font-[600]">{formatPrice(shipping)}</h5>
             </div>
             <h5 className="text-[18px] font-[600] text-end pt-3">{formatPrice(totalPrice)}</h5>
         </div>

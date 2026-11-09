@@ -13,29 +13,18 @@ export const getOrderItemPrice = (item) => {
 };
 
 export const calculateCartTotals = (cart = []) => {
-  const shopSubtotals = new Map();
   let subTotalCents = 0;
 
   cart.forEach((item) => {
     const lineTotalCents =
       Math.round(getProductPrice(item) * 100) * Number(item.qty || 0);
-    const shopId = String(item.shopId || "");
-    shopSubtotals.set(
-      shopId,
-      (shopSubtotals.get(shopId) || 0) + lineTotalCents
-    );
     subTotalCents += lineTotalCents;
   });
 
-  const shippingCents = Array.from(shopSubtotals.values()).reduce(
-    (total, shopSubtotal) => total + Math.round(shopSubtotal * 0.1),
-    0
-  );
-
   return {
     subTotalPrice: subTotalCents / 100,
-    shipping: shippingCents / 100,
-    totalPrice: (subTotalCents + shippingCents) / 100,
+    shipping: 0,
+    totalPrice: subTotalCents / 100,
   };
 };
 

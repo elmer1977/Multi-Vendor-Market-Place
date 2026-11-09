@@ -40,7 +40,6 @@ const Payment = () => {
                     ...latestOrder,
                     cart: data.cart,
                     subTotalPrice: data.subTotalPrice,
-                    shipping: data.shipping,
                     totalPrice: data.totalPrice,
                 };
                 setOrderData(pricedOrder);
@@ -459,11 +458,6 @@ const CartData = ({ orderData }) => {
             <div className="flex justify-between">
                 <h3 className="text-[16px] font-[400] text-[#000000a4]">subtotal:</h3>
                 <h5 className="text-[18px] font-[600]">{formatPrice(orderData.subTotalPrice)}</h5>
-            </div>
-            <br />
-            <div className="flex justify-between">
-                <h3 className="text-[16px] font-[400] text-[#000000a4]">shipping:</h3>
-                <h5 className="text-[18px] font-[600]">{formatPrice(orderData.shipping)}</h5>
             </div>
             <h5 className="text-[18px] font-[600] text-end pt-3">
                 {formatPrice(orderData.totalPrice)}
