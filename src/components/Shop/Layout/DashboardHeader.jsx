@@ -8,6 +8,10 @@ import { BiMessageSquareDetail } from "react-icons/bi";
 import { backend_url } from "../../../server";
 import { imageUrl } from "../../../utils/imageUrl";
 import { getAllOrdersOfShop } from "../../../redux/actions/order";
+import {
+    loadReadNotificationIds,
+    persistReadNotification,
+} from "../../../utils/notificationReadState";
 
 const DashboardHeader = () => {
     const dispatch = useDispatch();
@@ -35,17 +39,21 @@ const DashboardHeader = () => {
             return;
         }
 
-        const savedIds = JSON.parse(localStorage.getItem(notificationKey) || "[]");
-        setReadNotificationIds(savedIds);
+        setReadNotificationIds(loadReadNotificationIds(notificationKey));
     }, [notificationKey]);
 
     const markNotificationRead = (order) => {
-        const notificationId = `${order._id}:${order.status}`;
-        const nextIds = [...new Set([...readNotificationIds, notificationId])];
-        setReadNotificationIds(nextIds);
-        if (notificationKey) {
-            localStorage.setItem(notificationKey, JSON.stringify(nextIds));
+        if (!notificationKey) {
+            return;
         }
+
+        const notificationId = `${order._id}:${order.status}`;
+        const nextIds = persistReadNotification(
+            notificationKey,
+            notificationId,
+            readNotificationIds
+        );
+        setReadNotificationIds(nextIds);
     };
 
     return (

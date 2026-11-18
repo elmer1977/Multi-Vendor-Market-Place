@@ -20,6 +20,10 @@ import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
 import { RxCross1 } from "react-icons/rx";
 import { getAllOrdersOfUser } from "../../redux/actions/order";
+import {
+  loadReadNotificationIds,
+  persistReadNotification,
+} from "../../utils/notificationReadState";
 
 const Header = ({ activeHeading }) => {
   const dispatch = useDispatch();
@@ -77,17 +81,21 @@ const Header = ({ activeHeading }) => {
       return;
     }
 
-    const savedIds = JSON.parse(localStorage.getItem(notificationKey) || "[]");
-    setReadNotificationIds(savedIds);
+    setReadNotificationIds(loadReadNotificationIds(notificationKey));
   }, [notificationKey]);
 
   const markNotificationRead = (order) => {
-    const notificationId = `${order._id}:${order.status}`;
-    const nextIds = [...new Set([...readNotificationIds, notificationId])];
-    setReadNotificationIds(nextIds);
-    if (notificationKey) {
-      localStorage.setItem(notificationKey, JSON.stringify(nextIds));
+    if (!notificationKey) {
+      return;
     }
+
+    const notificationId = `${order._id}:${order.status}`;
+    const nextIds = persistReadNotification(
+      notificationKey,
+      notificationId,
+      readNotificationIds
+    );
+    setReadNotificationIds(nextIds);
   };
 
   useEffect(() => {
