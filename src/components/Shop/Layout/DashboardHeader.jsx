@@ -100,7 +100,7 @@ const DashboardHeader = () => {
                                 {visibleNotifications.length > 0 ? visibleNotifications.slice(0, 6).map((order) => (
                                     <Link
                                         key={order._id}
-                                        to="/dashboard-orders"
+                                        to={`/order/${order._id}`}
                                         onClick={() => {
                                             markNotificationRead(order);
                                             setOpenNotifications(false);
