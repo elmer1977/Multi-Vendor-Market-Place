@@ -27,6 +27,12 @@ const OrderDetails = () => {
 
   const data = orders && orders.find((item) => item._id === id);
 
+  useEffect(() => {
+    if (data?.status) {
+      setStatus(data.status);
+    }
+  }, [data?.status]);
+
   const orderUpdateHandler = async (e) => {
     await axios
       .put(
@@ -41,7 +47,7 @@ const OrderDetails = () => {
         navigate("/dashboard-orders");
       })
       .catch((error) => {
-        toast.error(error.response.data.message);
+        toast.error(error.response?.data?.message || "Unable to update order status");
       });
   };
 
@@ -59,7 +65,7 @@ const OrderDetails = () => {
         dispatch(getAllOrdersOfShop(seller._id));
       })
       .catch((error) => {
-        toast.error(error.response.data.message);
+        toast.error(error.response?.data?.message || "Unable to update order status");
       });
   };
 
