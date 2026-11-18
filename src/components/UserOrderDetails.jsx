@@ -249,13 +249,7 @@ const UserOrderDetails = () => {
           Order status: <strong>{data?.status}</strong>
         </h5>
       </div>
-      {[
-        "Pending",
-        "Processing",
-        "Transferred to delivery partner",
-        "Shipping",
-        "Received",
-      ].includes(data?.status) && (
+      {data?.status === "Pending" && (
         <div className="mt-4 text-right">
           <button
             type="button"
@@ -266,7 +260,7 @@ const UserOrderDetails = () => {
             {isCancelling ? "Cancelling..." : "Cancel Order"}
           </button>
           <p className="mt-2 text-sm text-gray-600">
-            Orders can be cancelled until they are on the way. Payment refunds are handled separately.
+            Orders can only be cancelled while their status is Pending. Payment refunds are handled separately.
           </p>
         </div>
       )}
